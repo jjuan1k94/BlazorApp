@@ -1,0 +1,55 @@
+﻿@using Entities;
+@using Business;
+@inject ProductBusiness productB;
+@inject CategoryBusiness categoryB;
+
+<hr />
+<select class="form-control" @onchange="handleChange">
+    <option value=""> Seleccione una opción ...</option>
+    @foreach (var category in categories)
+    {
+        <option value="@category.CategoryId">
+            @category.CategoryName
+        </option>
+    }
+</select>
+<hr />
+<table class="table table-hover table-bordered">
+    <thead>
+        <tr>
+            <th>Regerencia</th>
+            <th>Nombre</th>
+            <th>Categoría</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in products)
+        {
+            if (string.IsNullOrEmpty(categoryIdSelected) || item.CategoryId == categoryIdSelected)
+            {
+                <tr>
+                    <td>@item.ProductId</td>
+                    <td>@item.ProductName</td>
+                    <td>@item.CategoryId</td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+
+@code {
+    List<ProductEntity> products = new List<ProductEntity>();
+    List<CategoryEntity> categories = new List<CategoryEntity>();
+    string categoryIdSelected = null;
+
+    protected override async Task OnInitializedAsync()
+    {
+        products = productB.GetItems();
+        categories = categoryB.GetItems();
+    }
+
+    private void handleChange(ChangeEventArgs e)
+    {
+        categoryIdSelected = (string)e.Value;
+    }
+}
