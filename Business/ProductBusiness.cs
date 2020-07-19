@@ -17,6 +17,13 @@ namespace Business
                 return dbContext.Products.ToList();
             }
         }
+        public ProductEntity GetItem(string productId)
+        {
+            using (var dbContext = new InventoryContext())
+            {
+                return dbContext.Products.FirstOrDefault(p => p.ProductId == productId);
+            }
+        }
         public void CreateItem(ProductEntity item)
         {
             using (var dbContext = new InventoryContext())

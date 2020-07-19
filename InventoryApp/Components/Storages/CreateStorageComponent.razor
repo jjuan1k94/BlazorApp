@@ -1,0 +1,69 @@
+﻿@using Entities;
+@using Business;
+@inject NavigationManager navManager;
+@inject ProductBusiness productB;
+@inject WareHouseBusiness wareHouseB;
+@inject StorageBusiness storageB;
+
+<EditForm Model="storage">
+    <div class="form-group">
+        <label>WareHouse</label>
+        <InputSelect class="form-control" @bind-Value="storage.WareHouseId">
+            <option value="">Seleccione bodega...</option>
+            @foreach (var item in wareHouses)
+            {
+                <option value="@item.WareHouseId">
+                    @item.WareHouseName
+                </option>
+            }
+        </InputSelect>
+    </div>
+    <div class="form-group">
+        <label>Producto</label>
+        <InputSelect class="form-control" @bind-Value="storage.ProductId">
+            <option value="">Seleccione producto...</option>
+            @foreach (var item in products)
+            {
+                <option value="@item.ProductId">
+                    @item.ProductName
+                </option>
+            }
+        </InputSelect>
+    </div>
+    <input type="button" class="btn btn-primary" value="Save" @onclick="handleClick" />
+</EditForm>
+<div class="text-center">
+    @message
+</div>
+
+@code {
+    StorageEntity storage = new StorageEntity();
+    List<WareHouseEntity> wareHouses = new List<WareHouseEntity>();
+    List<ProductEntity> products = new List<ProductEntity>();
+    string message { get; set; } = "";
+
+    protected override async Task OnInitializedAsync()
+    {
+        wareHouses = wareHouseB.GetItems();
+        products = productB.GetItems();
+    }
+
+    private void handleClick()
+    {
+
+        if (!storageB.ProductAlreadyExists(storage.ProductId,storage.WareHouseId))
+        {
+            storage.StorageName = $"Test-{Guid.NewGuid()}";
+            storage.LastUpdate = DateTime.Now;
+            storage.StorageId = Guid.NewGuid().ToString();
+            storageB.CreateItem(storage);
+
+            message = "Producto registrado correctamente";
+            return;
+        }
+        message = "El producto ya existe";
+
+
+    }
+
+}

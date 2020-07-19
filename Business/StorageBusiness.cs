@@ -4,7 +4,7 @@ using Entities;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
+using Microsoft.EntityFrameworkCore;
 
 namespace Business
 {
@@ -15,6 +15,17 @@ namespace Business
             using(var dbContext = new InventoryContext())
             {
                 return dbContext.Storages.ToList();
+            }
+        }
+        public  List<StorageEntity> GetItemsByWareHouseId(string wareHouseId)
+        {
+            using (var dbContext = new InventoryContext())
+            {
+                return dbContext.Storages
+                    .Include(f => f.Product)
+                    .Include(f => f.WareHouse)
+                    .Where(f => f.WareHouseId == wareHouseId)
+                    .ToList();
             }
         }
         public void CreateItem(StorageEntity item)
@@ -36,6 +47,16 @@ namespace Business
         public void DeleteItem(StorageEntity item)
         {
             throw new NotImplementedException();
+        }
+        public bool ProductAlreadyExists(string productId,string wareHouseId)
+        {
+            using(var dbContext = new InventoryContext())
+            {
+                var product = dbContext.Storages
+                    .FirstOrDefault(f => f.ProductId == productId && f.WareHouseId == wareHouseId);
+                return product != null ? true : false;
+
+            }
         }
     }
 }

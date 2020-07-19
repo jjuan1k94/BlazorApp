@@ -33,6 +33,8 @@ namespace InventoryApp
 
             services.AddSingleton<ProductBusiness>();
             services.AddSingleton<CategoryBusiness>();
+            services.AddSingleton<WareHouseBusiness>();
+            services.AddSingleton<StorageBusiness>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

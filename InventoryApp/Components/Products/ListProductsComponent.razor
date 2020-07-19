@@ -2,6 +2,7 @@
 @using Business;
 @inject ProductBusiness productB;
 @inject CategoryBusiness categoryB;
+@inject NavigationManager navManager;
 
 <hr />
 <select class="form-control" @onchange="handleChange">
@@ -20,6 +21,7 @@
             <th>Regerencia</th>
             <th>Nombre</th>
             <th>Categoría</th>
+            <th></th>
         </tr>
     </thead>
     <tbody>
@@ -31,6 +33,7 @@
                     <td>@item.ProductId</td>
                     <td>@item.ProductName</td>
                     <td>@item.CategoryId</td>
+                    <td><a href="product/update/@item.ProductId">Edit</a></td>
                 </tr>
             }
         }
